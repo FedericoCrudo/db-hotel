@@ -22,3 +22,42 @@ SELECT HOUR(`prenotazioni`.`created_at`) as OraPrenotazione ,COUNT( HOUR(`create
 FROM `prenotazioni` 
 GROUP BY HOUR(`created_at`) 
 ORDER BY `OraPrenotazione` ASC
+5) Stampare tutti gli ospiti per ogni prenotazione
+SELECT `prenotazioni_has_ospiti`.`id`, `ospiti`.`name`,`ospiti`.`lastname`
+FROM `prenotazioni_has_ospiti`
+INNER JOIN `ospiti`
+ON `prenotazioni_has_ospiti`.`ospite_id`=`ospiti`.`id`  
+ORDER BY `prenotazioni_has_ospiti`.`id` ASC
+
+6) Stampare Nome,Cognome, Prezzo delPagante per tutte leprenotazioni fatte aMaggio 2018
+
+SELECT `paganti`.`name`,`paganti`.`lastname`,`pagamenti`.`price`
+FROM `prenotazioni` 
+INNER JOIN `prenotazioni_has_ospiti` 
+ON `prenotazioni_has_ospiti`.`prenotazione_id`=`prenotazioni`.`id`
+INNER JOIN `ospiti`
+ON `ospiti`.`id`=`prenotazioni_has_ospiti`.`ospite_id`
+INNER JOIN `paganti`
+ON `paganti`.`ospite_id`=`ospiti`.`id`
+INNER JOIN `pagamenti`
+ON `paganti`.`id`=`pagamenti`.`pagante_id`
+WHERE YEAR(`prenotazioni`.`created_at`)=2018 AND
+MONTH(`prenotazioni`.`created_at`)=5
+7) Fai la somma di tutti i prezzi delle prenotazioni per le stanze del
+ primo piano
+SELECT SUM(`pagamenti`.`price`) as Somma_prezzi_primo_piano
+FROM `stanze`
+INNER JOIN `prenotazioni`
+ON `stanze`.`id`=`prenotazioni`.`stanza_id`
+INNER JOIN `pagamenti`
+ON `prenotazioni`.`id`=`pagamenti`.`prenotazione_id`
+WHERE`stanze`.`floor`=1
+8)Prendi i dati di fatturazione per la prenotazione con id=7
+SELECT `paganti`.`name`, `paganti`.`lastname`, `paganti`.`address`, `pagamenti`.`status`, `pagamenti`.`price`
+FROM `prenotazioni` 
+INNER JOIN `pagamenti`
+ON `prenotazioni`.`id`=`pagamenti`.`prenotazione_id`
+INNER join `paganti`
+ON `pagamenti`.`pagante_id`= `paganti`.`id`
+WHERE `prenotazioni`.`id`=7
+
